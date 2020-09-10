@@ -1,5 +1,3 @@
 {
-  "host": "0.0.0.0",
-  "port": "9999",
   "dsn": "postgres://htqfspeqxwujmv:4db6264e82a2cbef5f66cb07755c3513cd52ce91c3d1120b22b4315043fcf3f0@ec2-54-158-122-162.compute-1.amazonaws.com:5432/d5ug5voatimdqg"
 }
