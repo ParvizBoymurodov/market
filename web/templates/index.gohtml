@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    {{/* .Title - вывод данных */}}
+    <title>{{.Title}}</title>
+</head>
+
+
+<body>
+<style>
+    body {
+        background-image: url("https://varus.ua/sites/default/files/pictures/dsc_5031.jpg.pagespeed.ce.6pcGCxfVdr.jpg");
+        height: 100%;
+        color: black;
+        background-size: cover;
+    }
+</style>
+{{/* emmet */}}
+{{/* ! + Tab - структура */}}
+{{/* tag + Tab - разворачивает tag */}}
+{{/* tag{} + Tab - разворачивает tag + внутрь подставляет контент */}}
+<h1 style="text-align: center; color: chartreuse ">{{.Title}}</h1>
+{{/* CREATE, READ, UPDATE, DELETE */}}
+
+{{/* form>input+button */}}
+<div class="container">
+    <form action="/market/addproduct" method="POST">
+        <input type="hidden" name="action" value="save">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" class="form-control" name="name" placeholder="Name" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="category" placeholder="Category" required>
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="price" placeholder="Price" required>
+            </div>
+        </div>
+        <br>
+        <button class="btn btn-primary">Add Product</button>
+    </form>
+    <div class="qwer">
+        {{range $index, $val := .Products}}
+            <li style="position: relative; left: 20px; font-size: 24px;">
+                {{$val.Name}} {{$val.Category}} {{$val.Price}} $
+                <form action="/market/removeproduct" method="POST">
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="id" value="{{$val.ID}}">
+                    <button class="btn btn-danger">Remove</button>
+                </form>
+            </li>
+        {{end}}
+    </div>
+</div>
+
+<h2 style="text-align: center;color: chartreuse">{{.H1}}</h2>
+<div class="container">
+    <form action="/market/addsaleslist" method="POST">
+        <input type="hidden" name="action" value="save">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" class="form-control" name="client" placeholder="Client" required>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="product" placeholder="Product" required>
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="count" placeholder="Count" required>
+            </div>
+        </div>
+        <br>
+        <button class="btn btn-primary">Buy</button>
+    </form>
+    <div class="qwe">
+        {{range $index, $val := .List}}
+            <li style="position: relative; left: 20px; font-size: 24px;">
+                {{$val.Client}} купил/а {{$val.Count}} -штк/кг/л {{$val.Product}} за {{$val.Sum}}$
+            </li>
+        {{end}}
+    </div>
+</div>
+
+<style>
+.qwe{
+    color: yellowgreen;
+}
+.qwer{
+    color: yellowgreen;
+}
+</style>
+</body>
+</html>

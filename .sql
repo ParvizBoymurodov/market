@@ -1,0 +1,1 @@
+SELECT s.id, s.client, s.count,coalesce( p.category, 'котегория не выбрана'),s.product, coalesce(s.count*p.price , 0 )as sum from sales s left join  prices p on s.product = p.name;
