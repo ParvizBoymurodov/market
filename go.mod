@@ -1,8 +1,8 @@
-module github.com/ParvizBoymurodov/market
+module github.com/ParvizBoymurodov/market.git
 
-go 1.13
+go 1.15
 
-// +heroku goVersion go1.13
+// +heroku goVersion go1.15
 
 require (
 	github.com/jackc/pgx/v4 v4.8.1
