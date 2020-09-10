@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 	"errors"
+	errors2 "github.com/ParvizBoymurodov/market/pkg/errors"
+	"github.com/ParvizBoymurodov/market/pkg/models"
 	"github.com/jackc/pgx/v4/pgxpool"
-	errors2 "nellymarket/pkg/errors"
-	"nellymarket/pkg/models"
 )
 
 type NellyMarket struct {

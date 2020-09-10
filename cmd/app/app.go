@@ -2,8 +2,8 @@ package app
 
 import (
 	"errors"
+	"github.com/ParvizBoymurodov/market/pkg/services"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"nellymarket/pkg/services"
 	"net/http"
 )
 

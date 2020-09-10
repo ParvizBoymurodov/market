@@ -1,4 +1,4 @@
-module github.com/ParvizBoymurodov/market.git
+module github.com/ParvizBoymurodov/market
 
 go 1.15
 

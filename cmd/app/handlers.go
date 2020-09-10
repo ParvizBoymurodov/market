@@ -1,10 +1,10 @@
 package app
 
 import (
+	"github.com/ParvizBoymurodov/market/pkg/models"
 	"html/template"
 	"io/ioutil"
 	"log"
-	"nellymarket/pkg/models"
 	"net/http"
 	"path/filepath"
 	"strconv"
