@@ -55,8 +55,9 @@ func (receiver server) handlerAddProduct() func(w http.ResponseWriter, r *http.R
 		name := request.FormValue("name")
 		category := request.FormValue("category")
 		price, err := strconv.Atoi(request.FormValue("price"))
-		if price == 0 {
+		if price <= 0 {
 			http.Redirect(writer, request, "/", http.StatusPermanentRedirect)
+			return
 		}
 		if err != nil {
 			log.Print(err)
@@ -114,6 +115,7 @@ func (receiver server) handlerAddListSales() func(w http.ResponseWriter, r *http
 		count, err := strconv.Atoi(request.FormValue("count"))
 		if count == 0 {
 			http.Redirect(writer, request, "/", http.StatusPermanentRedirect)
+			return
 		}
 		if err != nil {
 			log.Print(err)
