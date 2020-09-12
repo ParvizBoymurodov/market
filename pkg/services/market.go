@@ -53,7 +53,7 @@ func (receiver *NellyMarket) Start() {
 	_, err = conn.Exec(context.Background(), `
 	Create table if not exists sales (
 	id BIGSERIAL PRIMARY KEY,
-	date date default now(),
+	date timestamp default now(),
 	product TEXT NOT NULL,
 	count int,
 	sum int,
@@ -129,7 +129,12 @@ func (receiver *NellyMarket) AddSalesInDB(sales models.Sales) (err error) {
 		return errors2.QueryErrors("Can't add clients to DB ", err)
 	}
 	defer add.Release()
-	_, err = add.Exec(context.Background(), `INSERT INTO sales(client, product, count) VALUES ($1,$2, $3)`, sales.Client, sales.Product, sales.Count)
+	var price int
+	err = add.QueryRow(context.Background(), `Select price from prices where removed = false and name = $1`, sales.Product).Scan(&price)
+	if err != nil {
+		return errors2.QueryErrors("CAN'T save sales 1 ", err)
+	}
+	_, err = add.Exec(context.Background(), `INSERT INTO sales(client, product, sum, count) VALUES ($1,$2, $3, $4)`, sales.Client, sales.Product, sales.Count*price, sales.Count)
 	if err != nil {
 		return errors2.QueryErrors("CAN'T save sales ", err)
 	}
@@ -143,7 +148,7 @@ func (receiver *NellyMarket) SalesList() (list []models.Sales, err error) {
 	}
 	defer conn.Release()
 
-	rows, err := conn.Query(context.Background(), `SELECT s.id, s.client, s.count,coalesce( p.category, 'котегория не выбрана'),s.product, coalesce(s.count*p.price , 0 )as sum from sales s left join  prices p on s.product = p.name;`)
+	rows, err := conn.Query(context.Background(), `SELECT to_char(date, 'DD.MM.YYYY HH24:MI:SS')  AS regdate, id, client, count,product,sum from sales ;`)
 	if err != nil {
 		return nil, errors2.QueryErrors("Can't select sales ",err)
 	}
@@ -152,8 +157,8 @@ func (receiver *NellyMarket) SalesList() (list []models.Sales, err error) {
 	list = make([]models.Sales, 0)
 	for rows.Next() {
 		item := models.Sales{}
-		err := rows.Scan(&item.ID,&item.Client, &item.Count, &item.Category,&item.Product, &item.Sum)
-		if err != nil {
+		err := rows.Scan(&item.Date, &item.ID, &item.Client, &item.Count, &item.Product, &item.Sum)
+		if err != nil  {
 			return nil,errors2.QueryErrors("Can't scan ",err)
 		}
 		list = append(list, item)

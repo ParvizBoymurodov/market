@@ -34,6 +34,7 @@ func (receiver server) handlerProductsList() func( http.ResponseWriter,  *http.R
 			Products []models.Prices
 			H1 string
 			List []models.Sales
+			IsError bool
 		}{
 			Title:   "Nelly Market",
 			Products: list,
@@ -109,11 +110,15 @@ func (receiver *server) handleFavicon() func(http.ResponseWriter, *http.Request)
 }
 
 func (receiver server) handlerAddListSales() func(w http.ResponseWriter, r *http.Request) {
+	tpl, err := template.ParseFiles(filepath.Join(receiver.templatesPath, "index.gohtml"))
+	if err != nil {
+		panic(err)
+	}
 	return func(writer http.ResponseWriter, request *http.Request) {
 		product := request.FormValue("product")
 		client := request.FormValue("client")
 		count, err := strconv.Atoi(request.FormValue("count"))
-		if count == 0 {
+		if count <= 0 {
 			http.Redirect(writer, request, "/", http.StatusPermanentRedirect)
 			return
 		}
@@ -133,39 +138,45 @@ func (receiver server) handlerAddListSales() func(w http.ResponseWriter, r *http
 		err = receiver.marketSvc.AddSalesInDB(products)
 		if err != nil {
 			log.Print(err)
-			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			list, err2 := receiver.marketSvc.ProductsList()
+			if err2 != nil {
+				log.Print(err2)
+				http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
+			list2, err2 := receiver.marketSvc.SalesList()
+			if err2 != nil {
+				log.Print(err2)
+				http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
+
+			data := struct {
+				Title   string
+				Products []models.Prices
+				H1 string
+				List []models.Sales
+				IsError bool
+				Error string
+			}{
+				Title:   "Nelly Market",
+				Products: list,
+				H1: "Sales list",
+				List: list2,
+				IsError: true,
+				Error: "No such product exists",
+			}
+
+			err2 = tpl.Execute(writer, data)
+			if err2 != nil {
+				log.Print(err2)
+				http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
+
 			return
 		}
 		http.Redirect(writer, request, "/", http.StatusPermanentRedirect)
 	}
 }
 
-//func (receiver server) handlerSalesList() func( http.ResponseWriter,  *http.Request) {
-//	tpl, err := template.ParseFiles(filepath.Join(receiver.templatesPath, "index.gohtml"))
-//	if err != nil {
-//		panic(err)
-//	}
-//	return func(writer http.ResponseWriter, request *http.Request) {
-//		list, err := receiver.marketSvc.SalesList()
-//		if err != nil {
-//			log.Print(err)
-//			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-//			return
-//		}
-//
-//		data := struct {
-//			H1   string
-//			Sales []models.Sales
-//		}{
-//			H1:   "Sales list",
-//			Sales: list,
-//		}
-//
-//		err = tpl.Execute(writer, data)
-//		if err != nil {
-//			log.Print(err)
-//			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-//			return
-//		}
-//	}
-//}

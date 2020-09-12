@@ -1,9 +1,5 @@
 package models
 
-import (
-	"time"
-)
-
 type Config struct {
 	Host string `json:"host"`
 	Port string `json:"port"`
@@ -28,7 +24,7 @@ type Clients struct { // для создания таблицы Клиент
 
 type Sales struct { // для добавления таблицы Продаж
 	ID int64
-	Date time.Time
+	Date string
 	Product string
 	Category string
 	Count int

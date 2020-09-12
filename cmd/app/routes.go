@@ -5,9 +5,6 @@ func (receiver *server) InitRoutes() {
 	mux.GET("/", receiver.handlerProductsList())
 	mux.POST("/", receiver.handlerProductsList())
 
-	//mux.GET("/list", receiver.handlerSalesList())
-	//mux.POST("/list", receiver.handlerSalesList())
-
 	mux.POST("/market/addproduct", receiver.handlerAddProduct())
 	mux.POST("/market/removeproduct", receiver.handleProductsRemove())
 

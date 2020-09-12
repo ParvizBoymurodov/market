@@ -10,13 +10,20 @@
 
     {{/* .Title - вывод данных */}}
     <title>{{.Title}}</title>
+
+    <script>
+        function removeErr(elementId) {
+            var element = document.getElementById(elementId);
+            element.parentNode.removeChild(element);
+        }
+    </script>
 </head>
 
 
 <body>
 <style>
     body {
-        background-image: url("https://varus.ua/sites/default/files/pictures/dsc_5031.jpg.pagespeed.ce.6pcGCxfVdr.jpg");
+        background-image: url("https://static1.squarespace.com/static/5af9493bf407b40c990d8489/t/5b0bd37170a6addca9d9ee7a/1527501823157/The+Black+Market+One.jpg?format=1500w");
         height: 100%;
         color: black;
         background-size: cover;
@@ -27,6 +34,15 @@
 {{/* tag + Tab - разворачивает tag */}}
 {{/* tag{} + Tab - разворачивает tag + внутрь подставляет контент */}}
 <h1 style="text-align: center; color: chartreuse ">{{.Title}}</h1>
+
+{{if .IsError }}
+    <div id="err" class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ .Error }}</h5>
+            <button type="button" class="btn btn-outline-dark" onclick="removeErr('err');">Close</button>
+        </div>
+    </div>
+{{end}}
 {{/* CREATE, READ, UPDATE, DELETE */}}
 
 {{/* form>input+button */}}
@@ -45,7 +61,7 @@
             </div>
         </div>
         <br>
-        <button class="btn btn-primary">Add Product</button>
+        <button class="btn btn-outline-info">Add Product</button>
     </form>
     <div class="qwer">
         {{range $index, $val := .Products}}
@@ -54,7 +70,7 @@
                 <form action="/market/removeproduct" method="POST">
                     <input type="hidden" name="action" value="remove">
                     <input type="hidden" name="id" value="{{$val.ID}}">
-                    <button class="btn btn-danger">Remove</button>
+                    <button class="btn btn-outline-danger">Remove</button>
                 </form>
             </li>
         {{end}}
@@ -77,12 +93,13 @@
             </div>
         </div>
         <br>
-        <button class="btn btn-primary">Buy</button>
+        <button class="btn btn-outline-info">Buy</button>
     </form>
     <div class="qwe">
         {{range $index, $val := .List}}
             <li style="position: relative; left: 20px; font-size: 24px;">
-                {{$val.Client}} купил/а {{$val.Count}} -штк/кг/л {{$val.Product}} за {{$val.Sum}}$
+              Дата и время покупки {{$val.Date}}
+              {{$val.Client}} купил/а {{$val.Count}} -штк/кг/л {{$val.Product}} за {{$val.Sum}}$
             </li>
         {{end}}
     </div>
